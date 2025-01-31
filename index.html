@@ -1,91 +1,103 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bulletin Atomic Clock</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: black;
-            font-family: Arial, sans-serif;
-            position: relative;
-        }
-        .clock {
-            display: flex;
-            gap: 10px;
-            z-index: 1;
-        }
-        .digit {
-            font-size: 4rem;
-            font-weight: bold;
-            color: red;
-            text-shadow: 0 0 20px red, 0 0 40px red;
-            background-color: #111;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .background-text {
-            position: absolute;
-            top: 50%;
-    
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 20rem; /* Increased size to fill the screen */
-            font-weight: bold;
-            color: #444;
-            opacity: 0.1;
-            z-index: -1;
-            line-height: 0.9; /* Reduced line spacing */
-        }
-        .background-text .row1 {
-            display: block;
-            position: relative;
-            left: -3%; /* Centered more evenly */
-            text-align: center;
-        }
-        .background-text .row2 {
-            display: block;
-            position: relative;
-            left: 3%; /* Centered more evenly */
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doomsday Clock</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      color: red;
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Fono tekstas */
+    .background-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 20vw; /* Labai didelis šriftas */
+      color: rgba(128, 128, 128, 0.1); /* Labai tamsiai pilka */
+      z-index: 1;
+      pointer-events: none;
+      text-align: center;
+      font-weight: bold;
+      line-height: 0.8; /* Kad raidės būtų arti viena kitos */
+    }
+
+    /* Laikrodžio stilius */
+    .clock {
+      position: relative;
+      z-index: 2;
+      font-size: 10vw;
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
+      color: red;
+      text-shadow: 0 0 5px red, 0 0 10px red, 0 0 20px red; /* Švytėjimo efektas */
+    }
+
+    /* Mirksėjimo efektas sekundėms */
+    .blink {
+      animation: blink 0.1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+  <!-- LED stiliaus šriftas -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="background-text">
-        <div class="row1">DOOMSDAY</div>
-        <div class="row2">CLOCK</div>
-    </div>
-    <div class="clock" id="clock">
-        <div class="digit">2</div>
-        <div class="digit">3</div>
-        <div class="digit">:</div>
-        <div class="digit">5</div>
-        <div class="digit">8</div>
-        <div class="digit">:</div>
-        <div class="digit">3</div>
-        <div class="digit">1</div>
-    </div>
-    <script>
-        const clockElement = document.getElementById('clock');
+  <!-- Fono tekstas -->
+  <div class="background-text">
+    <div>DOOMSDAY</div>
+    <div>CLOCK</div>
+  </div>
 
-        function updateClock() {
-            const hours = "23"; // Static hours based on Bulletin of Atomic Scientists
-            const minutes = "58"; // Static minutes
-            const seconds = String(Math.floor(Math.random() * 60)).padStart(2, '0');
+  <!-- Laikrodis -->
+  <div class="clock">
+    <span id="hours">23</span>:<span id="minutes">58</span>:<span id="seconds">31</span>
+  </div>
 
-            const timeString = `${hours}:${minutes}:${seconds}`;
-            const digits = timeString.split("");
+  <script>
+    const hoursElement = document.getElementById('hours');
+    const minutesElement = document.getElementById('minutes');
+    const secondsElement = document.getElementById('seconds');
 
-            clockElement.innerHTML = digits.map(digit => `<div class="digit">${digit}</div>`).join("");
-        }
+    // Pradinės reikšmės
+    let hours = 23;
+    let minutes = 58;
+    let seconds = 31;
 
-        setInterval(updateClock, 50); // Update seconds rapidly
-    </script>
+    function updateClock() {
+      // Sekundės mirksi labai greitai
+      secondsElement.classList.toggle('blink');
+
+      // Kartais "užstrigti" ties 31
+      if (Math.random() < 0.1) { // 10% tikimybė užstrigti
+        secondsElement.textContent = '31';
+      } else {
+        secondsElement.textContent = String(seconds).padStart(2, '0');
+      }
+    }
+
+    // Paleisti laikrodį
+    setInterval(updateClock, 50); // Atnaujinti kas 50 ms (labai greitas mirksėjimas)
+  </script>
 </body>
 </html>
